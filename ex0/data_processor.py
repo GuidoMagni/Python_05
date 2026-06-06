@@ -1,7 +1,3 @@
-# should i raise exceptions instead of printing error
-# messages? i think it would be better to raise
-# exceptions instead of printing error messages
-# but then i should create try-except
 from typing import Any
 import abc
 
