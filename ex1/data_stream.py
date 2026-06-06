@@ -1,21 +1,21 @@
-from typing import Any
+import typing
 import abc
 
 
 class DataProcessor(abc.ABC):
     def __init__(self) -> None:
-        self._buffer: list[Any] = []
+        self._buffer: list[typing.Any] = []
         self._total_processed: int = 0
 
     @abc.abstractmethod
-    def validate(self, data: Any) -> bool:
+    def validate(self, data: typing.Any) -> bool:
         pass
 
     @abc.abstractmethod
-    def ingest(self, data: Any) -> None:
+    def ingest(self, data: typing.Any) -> None:
         pass
 
-    def output(self) -> Any:
+    def output(self) -> typing.Any:
         if self._buffer:
             return self._buffer.pop(0)
         return None
@@ -37,7 +37,7 @@ class NumericProcessor(DataProcessor):
     def name(self) -> str:
         return "Numeric Processor"
 
-    def validate(self, data: Any) -> bool:
+    def validate(self, data: typing.Any) -> bool:
         if isinstance(data, bool):
             return False
         if isinstance(data, (int, float)):
@@ -59,7 +59,7 @@ class TextProcessor(DataProcessor):
     def name(self) -> str:
         return "Text Processor"
 
-    def validate(self, data: Any) -> bool:
+    def validate(self, data: typing.Any) -> bool:
         if isinstance(data, str):
             return True
         if isinstance(data, list):
@@ -79,7 +79,7 @@ class LogProcessor(DataProcessor):
     def name(self) -> str:
         return "Log Processor"
 
-    def validate(self, data: Any) -> bool:
+    def validate(self, data: typing.Any) -> bool:
         if isinstance(data, list):
             return all(
                 isinstance(item, dict) and self._REQUIRED_KEYS.issubset(item)
@@ -87,7 +87,7 @@ class LogProcessor(DataProcessor):
             )
         return False
 
-    def ingest(self, data: list[dict[str, Any]]) -> None:
+    def ingest(self, data: list[dict[str, typing.Any]]) -> None:
         for item in data:
             self._buffer.append(": ".join(str(v) for v in item.values()))
             self._total_processed += 1
@@ -100,7 +100,7 @@ class DataStream:
     def register_processor(self, proc: DataProcessor) -> None:
         self._processors.append(proc)
 
-    def process_stream(self, stream: list[Any]) -> None:
+    def process_stream(self, stream: list[typing.Any]) -> None:
         for element in stream:
             handled = False
             for proc in self._processors:
@@ -127,7 +127,7 @@ def main() -> None:
     print("\nInitialize Data Stream...")
     ds = DataStream()
     ds.print_processors_stats()
-    batch: list[Any] = [
+    batch: list[typing.Any] = [
         "Hello world",
         [3.14, -1, 2.71],
         [
